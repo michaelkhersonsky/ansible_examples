@@ -1,0 +1,5 @@
+---
+- name: Echo a message
+  tasks:
+    - name: Print a message
+      command: echo "Hello, World!"
