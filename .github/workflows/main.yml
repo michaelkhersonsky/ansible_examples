@@ -24,12 +24,8 @@ jobs:
       run: |
          echo ${PRIVATE_KEY} > key_file.pem
          chmod 400  key_file.pem
-         USER=centos
-         PLAYBOOK=test.yml
-         INVENTORY=test-inventory
-         ls -la
-         pwd
-         
+         cp .env-template .env
+         source .env
          ansible-playbook all-playbooks/${PLAYBOOK} -i all-playbooks/${INVENTORY} --user ${USER} --become --private-key key_file.pem
 
     - name: Print the result
