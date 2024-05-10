@@ -1,6 +1,10 @@
 ---
-hosts: all
-- name: Echo a message
+- name: Check if a number is even
+  hosts: all
+  vars:
+    number: 4
   tasks:
-    - name: Print a message
-      command: echo "Hello, World!"
+    - name: Check if number is even
+      debug:
+        msg: "The number {{ number }} is even."
+      when: number % 2 == 0
