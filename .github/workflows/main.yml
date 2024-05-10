@@ -1,0 +1,32 @@
+name: Run Ansible Playbook
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Ansible
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible
+
+    - name: Run Ansible playbook
+      env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+         echo ${PRIVATE_KEY} > key_file.pem
+         USER=centos
+         PLAYBOOK=test.yml
+         INVENTORY=test-inventory
+         ansible-playbook all-playbooks/${PLAYBOOK} -i all-playbooks/${INVENTORY} --user ${USER} --become --key-file key_file.pem
+
+    - name: Print the result
+      run: echo "Playbook run successfully!"
