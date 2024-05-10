@@ -30,7 +30,7 @@ jobs:
          ls -la
          pwd
          
-         ansible-playbook ansible-examples/all-playbooks/${PLAYBOOK} -i  ansible-examples/all-playbooks/${INVENTORY} --user ${USER} --become --key-file key_file.pem
+         ansible-playbook all-playbooks/${PLAYBOOK} -i all-playbooks/${INVENTORY} --user ${USER} --become --key-file key_file.pem
 
     - name: Print the result
       run: echo "Playbook run successfully!"
