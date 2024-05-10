@@ -1,0 +1,14 @@
+---
+- name: Add several users
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create multiple users
+      user:
+        name: "{{ item }}"
+        state: present
+        shell: /bin/bash
+      loop:
+        - alice
+        - bob
+        - charlie

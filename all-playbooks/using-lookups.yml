@@ -1,0 +1,11 @@
+---
+- name: Example playbook using lookup plugin with inline data
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Lookup inline data
+      debug:
+        msg: "The value retrieved is {{ lookup('vars', my_inline_data) }}"
+      vars:
+        my_inline_data: "value"

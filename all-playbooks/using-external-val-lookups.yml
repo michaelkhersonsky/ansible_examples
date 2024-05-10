@@ -1,0 +1,11 @@
+---
+- name: Example playbook using lookup plugin with external variables file
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Load variables from external file
+      debug:
+        msg: "The value of my_variable is {{ my_variable }}"
+      vars:
+        my_variable: "{{ lookup('vars', 'external_vars.yml') }}"

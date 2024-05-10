@@ -1,0 +1,19 @@
+---
+- name: Install packages on servers
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Install packages
+      ansible.builtin.debug:
+        msg: "Installing {{ item.1 }} on {{ item.0.name }}"
+      loop: "{{ servers | subelements('packages') }}"
+      vars:
+        servers:
+          - name: server1
+            packages:
+              - nginx
+              - mysql
+          - name: server2
+            packages:
+              - httpd
+              - postgresql
