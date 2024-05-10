@@ -24,10 +24,7 @@ jobs:
       run: |
          cp .env-template .env
          source .env
-         echo $INVENTORY
-         echo $PLAYBOOK
-         echo $USER
-         export PLAYBOOK=${PLAYBOOK} INVENTORY=${INVENTORY} USER=${USER} PASSWORD=$(PASSWORD} && ansible-playbook all-playbooks/${PLAYBOOK} -i all-playbooks/${INVENTORY} --user ${USER} --become --extra-vars "ansible_password=${PASSWORD}"
+         ansible-playbook all-playbooks/${PLAYBOOK} -i all-playbooks/${INVENTORY} --user ${USER} --become
 
     - name: Print the result
       run: echo "Playbook run successfully!"
