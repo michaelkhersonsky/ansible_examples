@@ -1,6 +1,6 @@
 ---
 - name: Check if a number is even
-  hosts: all
+  hosts: group2
   vars:
     number: 4
   tasks:
