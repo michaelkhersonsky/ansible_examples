@@ -1,0 +1,17 @@
+---
+- name: Check if httpd is installed and create a file
+  hosts: group3
+  gather_facts: yes
+  tasks:
+    - name: Check if httpd is installed
+      become: true
+      command: rpm -q httpd  # Adjust for your package manager if not using RPM-based distros
+      ignore_errors: yes
+      register: httpd_installed
+
+    - name: Create a file if httpd is installed
+      become: true
+      file:
+        path: /home/centos/file.txt
+        state: touch
+      when: httpd_installed.rc == 0

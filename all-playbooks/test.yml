@@ -2,9 +2,17 @@
 - name: Check if a number is even
   hosts: group2
   vars:
-    number: 4
+    install_list: ['httpd', 'tree', 'mariadb']
+    number: 46
+    another_number: 5 
   tasks:
     - name: Check if number is even
+      yum:
+        name: "{{ item }}"
+        state: present 
+      loop:  
+        "{{ install_list }}"
+      when: another_number < 10
+    - name: Use debug
       debug:
-        msg: "The number {{ number }} is even."
-      when: number % 2 == 0
+        msg: "{{another_number}}"

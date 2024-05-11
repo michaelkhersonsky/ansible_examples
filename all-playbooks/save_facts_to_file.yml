@@ -1,0 +1,19 @@
+---
+- name: Gather facts and install package based on OS version
+  hosts: group3
+  gather_facts: yes
+  tasks:
+    - name: Save facts to a file on localhost
+      copy:
+        content: "{{ ansible_facts | to_nice_json }}"
+        dest: /home/michael/facts.json
+        mode: '0644'
+
+    - name: Look up OS version from facts file
+      set_fact:
+        os_version: "{{ lookup('file', '/home/michael/facts.json') | from_json | json_query('ansible_distribution_version') }}"
+
+    - name: Install package based on OS version
+      package:
+        name: "{{ os_version }}"
+        state: present
