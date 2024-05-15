@@ -1,7 +1,5 @@
 [webservers]
-web3
+remote_server ansible_host=35.153.105.54 ansible_user=centos
 
 [dbservers]
-web2
-
-
+remote_server ansible_host=35.153.105.54 ansible_user=centos

@@ -25,3 +25,12 @@
   command: getenforce
   register: sestatus
   changed_when: false
+- name: Change Ulimits
+  pam_limits:
+    domain: centos
+    limit_type: soft
+    limit_item: nofile
+    value: 64000
+- name: debug 
+  debug: 
+    msg: "We have completed the common configuration for all servers"

@@ -1,39 +1,76 @@
 ---
 # This playbook will install mysql and create db user and give permissions.
+- name: Create a yum Mariadb repo in remote by using template
+  template:
+    src: mariadb.repo.j2
+    dest: /etc/yum.repos.d/maridb.repo
 
 - name: Install Mysql package
-  yum:
-    name: "{{ item }}"
-    state: installed
+  yum: name="{{ item }}" state=installed
   with_items:
-   - mysql-server
+   - epel-release
+   - MariaDB-server
+   - MariaDB-client
    - MySQL-python
    - libselinux-python
-   - libsemanage-python
+   - libsemanage-python 
 
-- name: Configure SELinux to start mysql on any port
-  seboolean:
-    name: mysql_connect_any
-    state: true
-    persistent: yes
-  when: sestatus.rc != 0
+- name: Restart Mariadb
+  service:
+    name: mariadb
+    state: restarted
+    enabled: true
+#- name: Run mariadb-secure-installation script
+#  shell:
+#    cmd: mariadb-secure-installation
+
+- name: delete anonymous MySQL server user for {{ ansible_nodename }}
+  mysql_user:
+    login_user: root
+    login_password: '{{ mysql_root }}'
+    check_implicit_admin: yes
+    user: ""
+    host: '{{ item }}'
+    state: "absent"
+  with_items:
+   - ""
+   - localhost
+
+- name: Change root user password on first run
+  vars: 
+    mysql_root: 'password'
+  mysql_user: login_user=root
+              login_password="{{ mysql_root }}"
+              check_implicit_admin=yes
+              name=root
+              password={{ mysql_root }}
+              priv=*.*:ALL,GRANT
+              host={{ item }}
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: remove the MySQL test database
+  action: mysql_db login_user=root login_password="{{ mysql_root }}" db=test state=absent
+
+#- name: Configure SELinux to start mysql on any port
+#  seboolean:
+#    name: mysql_connect_any
+#    state: true
+#    persistent: yes
+#  when: sestatus.rc != 0
 
 - name: Create Mysql configuration file
   template:
     src: my.cnf.j2
     dest: /etc/my.cnf
   notify:
-  - restart mysql
-
-- name: Start Mysql Service
-  service:
-    name: mysqld
-    state: started
-    enabled: yes
+  - restart mariadb
 
 - name: insert iptables rule
   lineinfile:
-    dest: /etc/sysconfig/iptables
+    path: /etc/sysconfig/iptables
     state: present
     regexp: "{{ mysql_port }}"
     insertafter: "^:OUTPUT "
